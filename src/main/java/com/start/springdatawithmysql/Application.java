@@ -2,10 +2,12 @@ package com.start.springdatawithmysql;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
 /**
- * Created by æAnita on 13/5/2018.
+ * Created by ï¿½Anita on 13/5/2018.
  */
+@Import(DataConfig.class)
 @SpringBootApplication
 public class Application {
 

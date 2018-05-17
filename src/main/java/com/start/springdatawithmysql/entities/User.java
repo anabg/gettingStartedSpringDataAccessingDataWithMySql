@@ -1,12 +1,10 @@
 package com.start.springdatawithmysql.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 /**
- * Created by æAnita on 13/5/2018.
+ * Created by ï¿½Anita on 13/5/2018.
  */
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
@@ -17,6 +15,8 @@ public class User {
     private String name;
 
     private String email;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List <Address> address;
 
     public Integer getId() {
         return id;
@@ -42,5 +42,11 @@ public class User {
         this.email = email;
     }
 
+    public List<Address> getAddress() {
+        return address;
+    }
 
+    public void setAddress(List<Address> address) {
+        this.address = address;
+    }
 }

@@ -1,5 +1,6 @@
 package com.start.springdatawithmysql;
 
+import com.start.springdatawithmysql.entities.Address;
 import com.start.springdatawithmysql.entities.User;
 import com.start.springdatawithmysql.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
- * Created by æAnita on 13/5/2018.
+ * Created by ï¿½Anita on 13/5/2018.
  */
+
 @Controller    // This means that this class is a Controller
 @RequestMapping(path="/demo") // This means URL's start with /demo (after Application path)
 public class MainController {
@@ -28,11 +33,36 @@ public class MainController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
+        Address ad = new Address();
+        ad.setStreet("lavoz");
+
+
+        ArrayList<Address> a = new ArrayList<Address>();
+        a.add(ad);
         User n = new User();
         n.setName(name);
         n.setEmail(email);
+        n.setAddress(a);
         userRepository.save(n);
+
+        //String filter = "{'capability.platform.type': 'Buitin'}";
+
+        //String filter1 = "{'hidden':false}";
+        String filter ="{'name':First}";
+
+        String filter1 = "{'address.street':lavoz}";
+
+        //userRepository.getQuery(filter);
+        userRepository.getQuery(filter1);
+
+
+
+
+
+
         return "Saved";
+
+
     }
 
     @GetMapping(path="/all")
