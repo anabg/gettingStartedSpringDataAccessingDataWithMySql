@@ -89,36 +89,24 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     public CriteriaBuilder getQuery(final String filter) {
 
         int count = 0;
-        StringBuilder que = new StringBuilder("Select s from User s ");
+        StringBuilder fromQuery = new StringBuilder("Select s from User s ");
         StringBuilder where = new StringBuilder();
         String[] splitedQuery = null;
+        String value = "";
+        String keyValue = "";
 
         String f = filter.replace("{", "").replace("}", "").replace("'","");
 
         String alias  ="";
         for ( String q : f.split(",")) {
             splitedQuery = q.split(":");
-            String value = splitedQuery[1];
-            String keyValue = splitedQuery[0].replace(" ", "");
+            value = splitedQuery[1];
+            keyValue = splitedQuery[0].replace(" ", "");
             String[] key = getKey(keyValue);
 
             if(key.length > 1){
 
-                for(int i = 0; i <= key.length-2 ; i++){
-                    alias = key[i].substring(0,2);
-                    if(i==0){
-                        que.append(" join fetch s." + key[i] + " " + alias);
-                    } else {
-                        que.append(" join fetch " + key[i-1].substring(0,2) + "." + key[i] + " " + alias);
-                    }
-                }
-                if(where.length()==0){
-                    where.append(" where " + alias + "." + key[key.length-1] );
-                } else {
-                    where.append(" and " + alias + "." + key[key.length-1]);
-                }
-
-                where.append(" = " + "'" + value + "'");
+                alias = getQueryWithMultipleFetchs(fromQuery, where, alias, value, key);
 
             } else {
                 where.append(" where s." + key[0] + " = " + "'" + value + "'");
@@ -126,11 +114,33 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 
         }
 
-         String completeQuery = que.toString() + where.toString();
+         String completeQuery = fromQuery.toString() + where.toString();
          entityManager.createQuery(completeQuery, User.class).getResultList();
 
         return null;
 
+    }
+
+    private String getQueryWithMultipleFetchs(StringBuilder fromQuery, StringBuilder where, String alias, String value, String[] key) {
+        for(int i = 0; i <= key.length-2 ; i++){
+            alias = key[i].substring(0,2);
+            String keyValue = key[i] + " " + alias;
+            if(i==0){
+                fromQuery.append(" join fetch s." + keyValue);
+            } else {
+                fromQuery.append(" join fetch " + key[i-1].substring(0,2) + "." + keyValue);
+            }
+        }
+
+        String whereValue = alias + "." + key[key.length-1];
+        if(where.length()==0){
+            where.append(" where " + whereValue );
+        } else {
+            where.append(" and " + whereValue);
+        }
+
+        where.append(" = " + "'" + value + "'");
+        return alias;
     }
 
     private String getValue(String pattern , String value) {

@@ -72,7 +72,8 @@ public class MainController {
 
         //String filter1 = "{'address.street':lavoz, 'address.zipCode':5008'}";
         //String filter1 = "{'address.street.st':lavoz}";
-        String filter1 = "{'address.street':lavoz, 'mail.value':algo@algo.com}";
+        //String filter1 = "{'address.street':lavoz, 'mail.value':algo@algo.com}";
+        String filter1 = "{'address.street':lavoz, 'mail.value':algo@algo.com, 'address.zipCode':1010,}";
 
         //userRepository.getQuery(filter);
         userRepository.getQuery(filter1);
