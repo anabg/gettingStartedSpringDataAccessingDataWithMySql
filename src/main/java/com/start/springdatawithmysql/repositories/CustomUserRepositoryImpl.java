@@ -109,7 +109,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
                     if(i==0){
                         que.append(" join fetch s." + key[i] + " " + alias);
                     } else {
-                        que.append(" join fetch " + key[i-1].substring(0,2) + " " + key[i] + " " + alias);
+                        que.append(" join fetch " + key[i-1].substring(0,2) + "." + key[i] + " " + alias);
                     }
 
                 }
