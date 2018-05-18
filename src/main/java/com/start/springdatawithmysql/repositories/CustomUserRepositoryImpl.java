@@ -88,9 +88,9 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 
     public CriteriaBuilder getQuery(final String filter) {
 
-
         int count = 0;
         StringBuilder que = new StringBuilder("Select s from User s ");
+        StringBuilder where = new StringBuilder();
         String[] splitedQuery = null;
 
         String f = filter.replace("{", "").replace("}", "").replace("'","");
@@ -111,18 +111,23 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
                     } else {
                         que.append(" join fetch " + key[i-1].substring(0,2) + "." + key[i] + " " + alias);
                     }
-
+                }
+                if(where.length()==0){
+                    where.append(" where " + alias + "." + key[key.length-1] );
+                } else {
+                    where.append(" and " + alias + "." + key[key.length-1]);
                 }
 
-                que.append(" where " + alias + "." + key[key.length-1] + " = " + "'" + value + "'");
+                where.append(" = " + "'" + value + "'");
 
             } else {
-                que.append(" where s." + key[0] + " = " + "'" + value + "'");
+                where.append(" where s." + key[0] + " = " + "'" + value + "'");
             }
 
         }
 
-         entityManager.createQuery(que.toString(), User.class).getResultList();
+         String completeQuery = que.toString() + where.toString();
+         entityManager.createQuery(completeQuery, User.class).getResultList();
 
         return null;
 

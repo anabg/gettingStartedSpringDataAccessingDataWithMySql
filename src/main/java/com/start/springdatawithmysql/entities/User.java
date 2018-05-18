@@ -1,7 +1,8 @@
 package com.start.springdatawithmysql.entities;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.Email;
+import java.util.Set;
 
 /**
  * Created by �Anita on 13/5/2018.
@@ -14,9 +15,12 @@ public class User {
 
     private String name;
 
-    private String email;
+   // private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List <Address> address;
+    private Set <Address> address;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set <Mail> mail;
 
     public Integer getUser_id() {
         return user_id;
@@ -34,19 +38,19 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Address> getAddress() {
+    public Set<Address> getAddress() {
         return address;
     }
 
-    public void setAddress(List<Address> address) {
+    public void setAddress(Set<Address> address) {
         this.address = address;
+    }
+
+    public Set<Mail> getMail() {
+        return mail;
+    }
+
+    public void setMail(Set<Mail> mail) {
+        this.mail = mail;
     }
 }

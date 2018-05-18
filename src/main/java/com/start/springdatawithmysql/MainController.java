@@ -1,6 +1,7 @@
 package com.start.springdatawithmysql;
 
 import com.start.springdatawithmysql.entities.Address;
+import com.start.springdatawithmysql.entities.Mail;
 import com.start.springdatawithmysql.entities.User;
 import com.start.springdatawithmysql.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.validation.constraints.Email;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Created by �Anita on 13/5/2018.
@@ -36,17 +39,30 @@ public class MainController {
 
 
 
-        ArrayList<Address> a = new ArrayList<Address>();
+        Set<Address> a = new HashSet<Address>();
+        Set<Mail> emails = new HashSet<Mail>();
+
+
+
+
+
 
         User n = new User();
         n.setName(name);
-        n.setEmail(email);
+        //n.setEmail(mail);
+
+
+        Mail mail = new Mail();
+        mail.setValue("algo@algo.com");
 
         Address ad = new Address();
         ad.setStreet("lavoz");
         ad.setUser(n);
+        emails.add(mail);
+        mail.setUser(n);
         a.add(ad);
         n.setAddress(a);
+        n.setMail(emails);
         userRepository.save(n);
 
         //String filter = "{'capability.platform.type': 'Buitin'}";
@@ -55,7 +71,8 @@ public class MainController {
         //String filter1 ="{'name':First}";
 
         //String filter1 = "{'address.street':lavoz, 'address.zipCode':5008'}";
-        String filter1 = "{'address.street':lavoz}";
+        //String filter1 = "{'address.street.st':lavoz}";
+        String filter1 = "{'address.street':lavoz, 'mail.value':algo@algo.com}";
 
         //userRepository.getQuery(filter);
         userRepository.getQuery(filter1);
