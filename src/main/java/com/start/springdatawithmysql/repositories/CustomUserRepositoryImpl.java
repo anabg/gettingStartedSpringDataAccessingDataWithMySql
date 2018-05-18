@@ -38,16 +38,11 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     }
 
 
-    public CriteriaBuilder getQuery(final String filter) {
+    public CriteriaBuilder getQuery2(final String filter) {
 
-        /*EntityManagerFactory factory =
-                Persistence.createEntityManagerFactory("User");
-        EntityManager entityManager = factory.createEntityManager();*/
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> root = query.from( User.class );
-        //root.fetch("", JoinType.LEFT);
-        //entityManager.createQuery(criteriaQuery).setFirstResult(index).setMaxResults(pageSize);
 
         String[] splitedQuery = null;
 
@@ -70,16 +65,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
                     }
 
                 }
-                /**
-                 * CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-                 CriteriaQuery<MyEntity> query = builder.createQuery(MyEntity.class);
-                 Root<MyEntity> root = query.from(MyEntity.class);
-                 Join<MyEntity, RelatedEntity> join = root.join("relatedEntity");
-                 query.select(root).where(builder.equals(join.get("id"), 3));
-                 EntityGraph<MyEntity> fetchGraph = entityManager.createEntityGraph(MyEntity.class);
-                 fetchGraph.addSubgraph("relatedEntity");
-                 entityManager.createQuery(query).setHint("javax.persistence.loadgraph", fetchGraph);
-                 */
+
                 if(fa!=null){
                     query.select(root).where(
                             criteriaBuilder.equal(root.get(key[key.length-1]),value));
@@ -96,11 +82,49 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 
 
         }
+        return null;
+    }
 
 
-        User user = entityManager.createQuery( query ).getSingleResult();
+    public CriteriaBuilder getQuery(final String filter) {
 
-        return criteriaBuilder;
+
+        int count = 0;
+        StringBuilder que = new StringBuilder("Select s from User s ");
+        String[] splitedQuery = null;
+
+        String f = filter.replace("{", "").replace("}", "").replace("'","");
+
+        String alias  ="";
+        for ( String q : f.split(",")) {
+            splitedQuery = q.split(":");
+            String value = splitedQuery[1];
+            String keyValue = splitedQuery[0].replace(" ", "");
+            String[] key = getKey(keyValue);
+
+            if(key.length > 1){
+
+                for(int i = 0; i <= key.length-2 ; i++){
+                    alias = key[i].substring(0,2);
+                    if(i==0){
+                        que.append(" join fetch s." + key[i] + " " + alias);
+                    } else {
+                        que.append(" join fetch " + key[i-1].substring(0,2) + " " + key[i] + " " + alias);
+                    }
+
+                }
+
+                que.append(" where " + alias + "." + key[key.length-1] + " = " + "'" + value + "'");
+
+            } else {
+                que.append(" where s." + key[0] + " = " + "'" + value + "'");
+            }
+
+        }
+
+         entityManager.createQuery(que.toString(), User.class).getResultList();
+
+        return null;
 
     }
 

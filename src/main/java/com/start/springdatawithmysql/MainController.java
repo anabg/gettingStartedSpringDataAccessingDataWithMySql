@@ -33,23 +33,28 @@ public class MainController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
-        Address ad = new Address();
-        ad.setStreet("lavoz");
+
 
 
         ArrayList<Address> a = new ArrayList<Address>();
-        a.add(ad);
+
         User n = new User();
         n.setName(name);
         n.setEmail(email);
+
+        Address ad = new Address();
+        ad.setStreet("lavoz");
+        ad.setUser(n);
+        a.add(ad);
         n.setAddress(a);
         userRepository.save(n);
 
         //String filter = "{'capability.platform.type': 'Buitin'}";
 
         //String filter1 = "{'hidden':false}";
-        String filter ="{'name':First}";
+        //String filter1 ="{'name':First}";
 
+        //String filter1 = "{'address.street':lavoz, 'address.zipCode':5008'}";
         String filter1 = "{'address.street':lavoz}";
 
         //userRepository.getQuery(filter);
